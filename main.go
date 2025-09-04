@@ -104,8 +104,7 @@ func main() {
 			Message: "Rute salah",
 			Status:  "Rute tidak ditemukan",
 		})
-	})
-
+	})	
 	rounter.POST("/products", func(ctx *gin.Context) {
 		var body Product
 		if err := ctx.ShouldBind(&body); err != nil {
@@ -161,15 +160,15 @@ func main() {
 }
 
 type Product struct {
-	Name       string    `json:"name" `
+	Name       string    `json:"name" binding:"required" `
 	PromoId    *int      `json:"promo_id"`
-	Price      int       `json:"price,omitempty"`
+	Price      int       `json:"price,omitempty" binding:"required"`
 	Updatet_at time.Time `json:"update"`
 	Id         int       `json:"id,omitempty"`
 }
 
 type Books struct {
-	Id     int    `db:"id" json:"id"`
+	Id     int    `db:"id" json:"id" `
 	Title  string `db:"title" json:"title_buku"`
 	Author string `db:"author" json:"pembuat"`
 }
