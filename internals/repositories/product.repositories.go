@@ -3,6 +3,7 @@ package repositories
 import (
 	"context"
 	"log"
+	"time"
 
 	"github.com/federus1105/daysatu/internals/models"
 	"github.com/jackc/pgx/v5/pgconn"
@@ -32,4 +33,16 @@ func (p *ProductRepository) InsertNewProduct(rctx context.Context, body models.P
 	sql := "INSERT INTO products (name, promo_id, price) VALUES ($1,$2,$3)"
 	values := []any{body.Name, body.PromoId, body.Price}
 	return p.db.Exec(rctx, sql, values...)
+}
+
+func (p *ProductRepository) UpdateDataProduct(rctx context.Context, body models.Product) (models.Product, error) {
+	ProductiD := rctx.Param("id")
+	sql := "UPDATE products SET name = $1, updatet_at = $2 WHERE id = $3 RETURNING id, name, updatet_at"
+	values := []any{body.Name, time.Now(), ProductiD}
+	var updatedProduct models.Product
+	if err := p.db.QueryRow(rctx, sql, values...).Scan(&updatedProduct.Id, &updatedProduct.Name, &updatedProduct.Updatet_at); err != nil {
+		log.Println("Internal Server Error: ", err.Error())
+		return models.Product{}, err
+	}
+	return updatedProduct, nil
 }
