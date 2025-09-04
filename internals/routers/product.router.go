@@ -13,4 +13,5 @@ func InitProductRouter(router *gin.Engine, db *pgxpool.Pool) {
 	productHandler := handlers.NewProductHandler(productRepository)
 
 	productRouter.POST("/products", productHandler.AddNewProduct)
+	productRouter.PATCH("/products/:id", productHandler.GetProductWithparam)
 }
